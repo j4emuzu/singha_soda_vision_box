@@ -1,1 +1,17 @@
+version: '3.8'
 
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./web/index.html:/usr/share/nginx/html/index.html
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - yolo-service
+
+  yolo-service:
+    build: ./ai
+    # No ports exposed to the host! 
+    # Nginx will communicate with it internally on port 8000.
