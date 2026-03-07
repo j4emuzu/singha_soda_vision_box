@@ -1,1 +1,11 @@
+# --- AI and Machine Learning ---
+# Ignore the entire training directory (including datasets, models, andtraining scripts)
+training/
 
+# --- Python ---
+__pycache__/
+*.py[cod]
+
+# --- Docker ---
+.docker/
+*.log
