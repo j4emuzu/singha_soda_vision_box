@@ -13,5 +13,12 @@ services:
 
   yolo-service:
     build: ./ai
-    # No ports exposed to the host! 
-    # Nginx will communicate with it internally on port 8000.
+    container_name: yolo-service
+    runtime: nvidia # Use NVIDIA runtime for GPU access
+    shm_size: '2gb'
+    tty: true # Keep the container running for interactive use
+    volumes:
+    - .:/app # Mount the entire project directory for easy access to code and datasets 
+    working_dir: /app
+    environment:
+    - NVIDIA_VISIBLE_DEVICES=all
