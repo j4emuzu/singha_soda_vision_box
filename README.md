@@ -1,1 +1,1 @@
-# singha_soda_vision_box
+# ripe_fruit_classification
