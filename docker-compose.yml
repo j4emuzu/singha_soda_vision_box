@@ -16,8 +16,13 @@ services:
       context: .
       dockerfile: ai/Dockerfile
     container_name: yolo-service
-    runtime: nvidia # Required for GPU performance
+    # runtime: nvidia  <-- Comment out by default for compatibility
+    # deploy:          <-- Add this for modern Docker GPU support (Optional)
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
     shm_size: '2gb'
     restart: always
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
