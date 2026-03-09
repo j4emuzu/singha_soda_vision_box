@@ -19,7 +19,6 @@ Ensure you have the following installed on your system:
 Open **Terminal** or **Command Prompt** and run the following commands to download the project and enter the directory:
 ```bash 
 git clone https://github.com/j4emuzu/ripe_fruit_classification.git
-cd your-repo-name
 ```
 
 ### 3. Launching the Service
