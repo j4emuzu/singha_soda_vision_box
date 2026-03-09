@@ -12,13 +12,12 @@ services:
       - yolo-service
 
   yolo-service:
-    build: ./ai
+    build:
+      context: .
+      dockerfile: ai/Dockerfile
     container_name: yolo-service
-    runtime: nvidia # Use NVIDIA runtime for GPU access
+    runtime: nvidia # Required for GPU performance
     shm_size: '2gb'
-    tty: true # Keep the container running for interactive use
-    volumes:
-    - .:/app # Mount the entire project directory for easy access to code and datasets 
-    working_dir: /app
+    restart: always
     environment:
-    - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=all
