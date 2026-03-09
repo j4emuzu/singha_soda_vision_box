@@ -17,7 +17,7 @@ COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/pytho
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Embed model and source code for immediate functionality
-COPY training/models/fruit_classification/ripe_unripe_model_v5/weights/best.pt /app/best.pt
+COPY ai/best.pt /app/best.pt
 COPY ai/main.py /app/main.py
 
 # Expose API port

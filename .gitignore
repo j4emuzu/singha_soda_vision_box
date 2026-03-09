@@ -1,7 +1,12 @@
 # --- AI and Machine Learning ---
-# Ignore the entire training directory (including datasets, models, and training scripts)
+# Ignore heavy training data
 training/
+
+# Ignore all .pt files
 *.pt
+
+# BUT allow this specific model file
+!ai/best.pt
 
 # --- Python ---
 __pycache__/
