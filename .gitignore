@@ -1,6 +1,7 @@
 # --- AI and Machine Learning ---
-# Ignore the entire training directory (including datasets, models, andtraining scripts)
+# Ignore the entire training directory (including datasets, models, and training scripts)
 training/
+*.pt
 
 # --- Python ---
 __pycache__/
