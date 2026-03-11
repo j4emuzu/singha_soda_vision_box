@@ -26,31 +26,19 @@ services:
       dockerfile: Dockerfile
     container_name: fruit_api
 
-    # ─ Restart policy
     restart: unless-stopped
 
-    # ─ Working directory inside container
     working_dir: /app
 
-    # ─ Environment variables (for FastAPI/Python)
     environment:
-      - PYTHONUNBUFFERED=1 # Real-time logs (no buffering)
-      - UVICORN_HOST=0.0.0.0 # Listen on all interfaces
-      - UVICORN_PORT=8000 # Internal port
-      - UVICORN_LOG_LEVEL=info # Log level
+      - PYTHONUNBUFFERED=1
+      - UVICORN_HOST=0.0.0.0
+      - UVICORN_PORT=8000
+      - UVICORN_LOG_LEVEL=info
 
-    # ─ Volume mounts
     volumes:
-      # Mount source code (live reload in dev)
-      - ./ai:/app:ro # Read-only source
-      # Model file must be present in ./ai/
-      # e.g., ./ai/best.pt
+      - ./ai:/app:ro
 
-      # ─ Ports (internal only - not exposed to host)
-      # ports:
-      #   - "8000:8000"  # COMMENTED: Access through Nginx only!
-
-      # ─ Health check
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/docs" ]
       interval: 30s
@@ -58,11 +46,9 @@ services:
       retries: 3
       start_period: 40s
 
-    # ─ Networks
     networks:
       - app-network
 
-    # ─ Resource limits (optional - adjust based on GPU/CPU)
     deploy:
       resources:
         limits:
@@ -83,39 +69,29 @@ services:
     image: nginx:1.25-alpine
     container_name: fruit_web
 
-    # ─ Restart policy
     restart: unless-stopped
 
-    # ─ Depends on api being ready
     depends_on:
       api:
         condition: service_healthy
 
-    # ─ Volume mounts
     volumes:
-      # Nginx configuration
       - ./web/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./web:/web:ro
 
-      # Static files (HTML, CSS, JS, images)
-      - ./web:/web:ro # Read-only mount to /web (serves root /)
-
-    # ─ Ports (map 8000:8000)
     ports:
-      - "8000:8000" # External: localhost:8000 → Internal: Container port 8000
+      - "8000:8000"
 
-    # ─ Health check
     healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8000/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/docs" ]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 10s
+      retries: 5
+      start_period: 120s  # เพิ่มจาก 40s → 120s
 
-    # ─ Networks
     networks:
       - app-network
 
-    # ─ Resource limits (optional)
     deploy:
       resources:
         limits:
@@ -124,34 +100,16 @@ services:
 
 # ┌──────────────────────────────────────────────────────────────────────┐
 # │ NETWORKS: Internal Docker bridge network                             │
-# │ Services communicate via container names (e.g., api:8000)            │
-# │ Not exposed to host machine directly                                 │
 # └──────────────────────────────────────────────────────────────────────┘
 networks:
   app-network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.30.0.0/16
 
-  yolo-service:
-    build:
-      context: .
-      dockerfile: ai/Dockerfile
-    container_name: yolo-service
-    # runtime: nvidia  <-- Comment out by default for compatibility
-    # deploy:          <-- Add this for modern Docker GPU support (Optional)
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-    shm_size: '2gb'
-    restart: always
 # ┌──────────────────────────────────────────────────────────────────────┐
-# │ VOLUMES: (Optional) For persistent data or large model files         │
-# │ Uncomment if needed for model caching, logs, etc.                    │
+# │ VOLUMES: (Optional) Uncomment if needed                              │
 # └──────────────────────────────────────────────────────────────────────┘
 # volumes:
 #   api_cache:
