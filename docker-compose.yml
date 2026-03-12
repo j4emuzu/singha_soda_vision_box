@@ -2,20 +2,44 @@
 # ║    SINGHA SODA VISION BOX - Docker Compose Configuration            ║
 # ║                                                                      ║
 # ║    Services:                                                         ║
-# ║      - npm        : Nginx Proxy Manager (Reverse Proxy + UI)        ║
+# ║      - web        : Nginx (Static file server)                      ║
 # ║      - api        : FastAPI (YOLO Inference)                        ║
+# ║      - npm        : Nginx Proxy Manager (Reverse Proxy + UI)        ║
 # ║                                                                      ║
+# ║    Flow: Internet → NPM:80 → fruit_web:80 (static)                 ║
+# ║                            → fruit_api:8000 (POST /predict)        ║
 # ║    Ports:                                                            ║
-# ║      :80   → HTTP                                                   ║
-# ║      :443  → HTTPS                                                  ║
+# ║      :80   → HTTP (NPM)                                             ║
+# ║      :443  → HTTPS (NPM)                                            ║
 # ║      :81   → NPM Admin UI                                           ║
 # ╚════════════════════════════════════════════════════════════════════╝
 
 services:
   # ┌──────────────────────────────────────────────────────────────────┐
+  # │ SERVICE: web (Nginx static)                                      │
+  # │ Purpose: Serve index.html + static assets                        │
+  # │ Internal Port: 80 (via app-network เท่านั้น)                     │
+  # │ NPM จะ forward มาที่ fruit_web:80                                │
+  # └──────────────────────────────────────────────────────────────────┘
+  web:
+    image: nginx:1.25-alpine
+    container_name: fruit_web
+    restart: unless-stopped
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 64M
+
+  # ┌──────────────────────────────────────────────────────────────────┐
   # │ SERVICE: api (FastAPI + YOLO)                                    │
   # │ Purpose: Image classification inference                          │
   # │ Internal Port: 8000 (via app-network เท่านั้น)                   │
+  # │ NPM จะ forward /predict มาที่ fruit_api:8000                     │
   # └──────────────────────────────────────────────────────────────────┘
   api:
     build:
@@ -52,7 +76,6 @@ services:
   # │ SERVICE: npm (Nginx Proxy Manager)                               │
   # │ Purpose: Reverse proxy + SSL + Web UI                            │
   # │ Admin UI : http://your-ip:81                                     │
-  # │ Default  : admin@example.com / changeme                          │
   # └──────────────────────────────────────────────────────────────────┘
   npm:
     image: jc21/nginx-proxy-manager:latest
