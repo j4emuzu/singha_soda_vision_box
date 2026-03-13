@@ -100,6 +100,31 @@ docker compose up -d --build
 ```bash
 docker compose ps
 ```
+### 5. Proxy Setup (Required for first run)
+
+Since the application uses Nginx Proxy Manager (NPM) to route traffic, you need to configure the proxy host before accessing the main web interface.
+
+1. Access the NPM Admin UI at [http://localhost:81](http://localhost:81).
+2. Log in using the default credentials:
+   - **Email:** `admin@example.com`
+   - **Password:** `changeme`
+   > **Note:** You will be prompted to update these credentials upon your first login.
+3. Navigate to **Hosts** > **Proxy Hosts** and click **Add Proxy Host**.
+4. Configure the following settings in the **Details** tab:
+   - **Domain Names:** `localhost` (or your custom domain/IP)
+   - **Scheme:** `http`
+   - **Forward Hostname / IP:** `fruit_web`
+   - **Forward Port:** `80`
+   - ✅ Enable **Cache Assets**
+   - ✅ Enable **Block Common Exploits**
+5. Click **Save**.
+
+---
+
+- After complete all this Doc. Your Web can be acces in [http://localhost:80](http://localhost:80)
+- For Example You can try to test in [My Personal Server](https://www.recasa888.duckdns.org)
+
+---
 
 Expected output:
 ```
@@ -280,11 +305,6 @@ docker exec -it fruit_api bash
 - Use clear, well-lit images with the fruit filling most of the frame
 - Confidence threshold is `0.5` in `main.py` — adjust if needed
 - Supported: Apple, Banana, Mango, Orange, Papaya, Grape, Strawberry
-
----
-
-- After complete all this Doc. Your Web can be acces in [http://localhost:80](http://localhost:80)
-- For Example You can try to test in [My Personal Server](https://www.recasa888.duckdns.org)
 
 ---
 
