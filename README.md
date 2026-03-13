@@ -283,8 +283,8 @@ docker exec -it fruit_api bash
 
 ---
 
-After complete all this Doc. Your Web can be acces in [localhost:80](http://localhost:80)
-For Example You can try to test in [My Personal Server](https://www.recasa888.duckdns.org)
+- After complete all this Doc. Your Web can be acces in [http://localhost:80](http://localhost:80)
+- For Example You can try to test in [My Personal Server](https://www.recasa888.duckdns.org)
 
 ---
 
